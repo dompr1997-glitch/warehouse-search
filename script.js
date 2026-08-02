@@ -220,11 +220,55 @@ video,
 if(result){
 
 
-console.log(
-"Штрихкод:",
-result.text
-);
+    console.log(
+        "Получен штрихкод:",
+        result.text
+    );
 
+
+    let article =
+        formatArticle(result.text);
+
+
+    console.log(
+        "Сформирован артикул:",
+        article
+    );
+
+
+
+    const input =
+        document.getElementById("article");
+
+
+
+    input.value = article;
+
+
+
+    // вызываем событие изменения поля
+    input.dispatchEvent(
+        new Event("input")
+    );
+
+
+
+    stopScanner();
+
+
+
+    // небольшая задержка,
+    // чтобы поле успело заполниться
+
+    setTimeout(()=>{
+
+        findProduct();
+
+    },300);
+
+
+
+}
 
 
 let article = formatArticle(result.text);
