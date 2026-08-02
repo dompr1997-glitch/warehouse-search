@@ -227,18 +227,16 @@ result.text
 
 
 
-let article =
-formatArticle(result.text);
-
-
-
-document
-.getElementById("article")
-.value = article;
+let article = formatArticle(result.text);
 
 console.log(
-"Артикул после форматирования:",
-article
+    "Штрихкод:",
+    result.text
+);
+
+console.log(
+    "Артикул:",
+    article
 );
 
 
@@ -331,12 +329,11 @@ document
 
 function formatArticle(code){
 
-
     let value = String(code)
         .replace(/\D/g,"");
 
 
-
+    // если сканер прочитал длинный код,
     // берем последние 7 цифр
     if(value.length > 7){
 
@@ -345,31 +342,20 @@ function formatArticle(code){
     }
 
 
-
     if(value.length === 7){
 
-
         return (
-
             value.substring(0,2)
-            +
-            "."
-            +
-            value.substring(2,4)
-            +
-            "."
-            +
-            value.substring(4,7)
-
+            + "."
+            + value.substring(2,4)
+            + "."
+            + value.substring(4,7)
         );
-
 
     }
 
 
-
     return value;
-
 
 }
 
