@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Поиск товара</title>
+
+<link rel="stylesheet" href="style.css">
+
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h2>
+📦 Поиск товара
+</h2>
+
+
+<input 
+id="article"
+type="text"
+placeholder="00.00.000"
+maxlength="9"
+>
+
+
+<button onclick="findProduct()">
+🔎 Найти
+</button>
+
+
+<button onclick="startScanner()">
+📷 Сканировать
+</button>
+
+
+
+<div id="scanner">
+
+<video id="video" autoplay playsinline></video>
+
+</div>
+
+
+
+<div id="result">
+
+</div>
+
+
+</div>
+
+
+
+<script src="https://unpkg.com/@zxing/library@latest"></script>
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
