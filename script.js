@@ -328,35 +328,43 @@ document
 function formatArticle(code){
 
 
-code =
-String(code)
-.replace(/\D/g,"");
+    let value = String(code)
+        .replace(/\D/g,"");
 
 
 
-if(code.length===7){
+    // берем последние 7 цифр
+    if(value.length > 7){
 
+        value = value.slice(-7);
 
-return (
-
-code.substring(0,2)
-+
-"."
-+
-code.substring(2,4)
-+
-"."
-+
-code.substring(4)
-
-);
-
-
-}
+    }
 
 
 
-return code;
+    if(value.length === 7){
+
+
+        return (
+
+            value.substring(0,2)
+            +
+            "."
+            +
+            value.substring(2,4)
+            +
+            "."
+            +
+            value.substring(4,7)
+
+        );
+
+
+    }
+
+
+
+    return value;
 
 
 }
