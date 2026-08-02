@@ -3,61 +3,80 @@ const API_URL =
 
 
 
+let codeReader = null;
+
+
+
+/*
+========================================
+Поиск товара
+========================================
+*/
+
+
 function findProduct(){
 
 
-let article =
-document
-.getElementById("article")
-.value
-.trim();
+    const article =
+    document
+    .getElementById("article")
+    .value
+    .trim();
 
 
 
-if(article===""){
+    if(article===""){
 
-alert("Введите артикул");
+        alert("Введите артикул");
 
-return;
+        return;
+
+    }
+
+
+
+    fetch(
+        API_URL +
+        "?article=" +
+        encodeURIComponent(article)
+    )
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        showProduct(data);
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        showMessage(
+            "Ошибка соединения с сервером"
+        );
+
+    });
+
 
 }
 
 
 
-fetch(
-API_URL + "?article=" + encodeURIComponent(article)
-)
-
-.then(response=>response.json())
-
-.then(data=>{
 
 
-showProduct(data);
-
-
-})
-
-.catch(error=>{
-
-
-console.error(error);
-
-alert("Ошибка связи с API");
-
-
-});
-
-
-}
-
-
+/*
+========================================
+Вывод товара
+========================================
+*/
 
 
 function showProduct(data){
 
 
-let result =
+const result =
 document.getElementById("result");
 
 
@@ -65,7 +84,7 @@ document.getElementById("result");
 if(!data.success){
 
 
-result.innerHTML=`
+result.innerHTML = `
 
 <div class="card">
 
@@ -75,14 +94,14 @@ result.innerHTML=`
 
 `;
 
-
 return;
+
 
 }
 
 
 
-result.innerHTML=`
+result.innerHTML = `
 
 <div class="card">
 
@@ -107,8 +126,9 @@ ${data.name}
 
 
 <p>
-Ячейка:
+Ячейка хранения:
 </p>
+
 
 <div class="cell">
 
@@ -128,10 +148,236 @@ ${data.cell}
 
 
 
-function startScanner(){
+
+/*
+========================================
+Запуск сканера ZXing
+========================================
+*/
+
+
+async function startScanner(){
+
+
+const video =
+document.getElementById("video");
+
+
+const scanner =
+document.getElementById("scanner");
+
+
+
+scanner.style.display="block";
+
+
+
+codeReader =
+new ZXing.BrowserMultiFormatReader();
+
+
+
+try{
+
+
+const devices =
+await codeReader.listVideoInputDevices();
+
+
+
+if(devices.length===0){
+
 
 alert(
-"Сканер подключим следующим шагом"
+"Камера не найдена"
 );
+
+return;
+
+
+}
+
+
+
+
+// выбираем последнюю камеру
+// обычно задняя камера телефона
+
+const selectedDeviceId =
+devices[devices.length-1].deviceId;
+
+
+
+codeReader.decodeFromVideoDevice(
+
+selectedDeviceId,
+
+video,
+
+(result, error)=>{
+
+
+if(result){
+
+
+console.log(
+"Штрихкод:",
+result.text
+);
+
+
+
+let article =
+formatArticle(result.text);
+
+
+
+document
+.getElementById("article")
+.value =
+article;
+
+
+
+stopScanner();
+
+
+
+findProduct();
+
+
+
+}
+
+
+}
+
+
+);
+
+
+
+}
+
+catch(error){
+
+
+console.error(
+"Ошибка камеры:",
+error
+);
+
+
+alert(
+"Ошибка камеры: "
++
+error.message
+);
+
+
+}
+
+
+
+}
+
+
+
+
+
+/*
+========================================
+Остановка камеры
+========================================
+*/
+
+
+function stopScanner(){
+
+
+
+if(codeReader){
+
+
+codeReader.reset();
+
+
+}
+
+
+
+document
+.getElementById("scanner")
+.style.display="none";
+
+
+}
+
+
+
+
+
+/*
+========================================
+Формат артикула
+2503001 → 25.03.001
+========================================
+*/
+
+
+function formatArticle(code){
+
+
+code =
+String(code)
+.replace(/\D/g,"");
+
+
+
+if(code.length===7){
+
+
+return (
+
+code.substring(0,2)
++
+"."
++
+code.substring(2,4)
++
+"."
++
+code.substring(4)
+
+);
+
+
+}
+
+
+
+return code;
+
+
+}
+
+
+
+
+
+function showMessage(text){
+
+
+document
+.getElementById("result")
+.innerHTML = `
+
+<div class="card">
+
+${text}
+
+</div>
+
+`;
 
 }
