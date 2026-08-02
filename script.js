@@ -234,8 +234,12 @@ formatArticle(result.text);
 
 document
 .getElementById("article")
-.value =
-article;
+.value = article;
+
+console.log(
+"Артикул после форматирования:",
+article
+);
 
 
 
