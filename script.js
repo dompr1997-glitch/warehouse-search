@@ -2,30 +2,35 @@ const API_URL =
 "https://script.google.com/macros/s/AKfycbzvTP0fucQOfvu-H3eOnseMO2cDa2bzMdKgYIejdlYdWeXupyQ-7qaKEiKek6NzWUdt0g/exec";
 
 
-
 let codeReader = null;
-
 
 
 /*
 ========================================
-Поиск товара
+Поиск товара по артикулу
 ========================================
 */
-
 
 function findProduct(){
 
 
     const article =
-    document
-    .getElementById("article")
-    .value
-    .trim();
+        document
+        .getElementById("article")
+        .value
+        .trim();
 
 
 
-    if(article===""){
+    console.log(
+        "Поиск артикула:",
+        article
+    );
+
+
+
+    if(article === ""){
+
 
         alert("Введите артикул");
 
@@ -41,21 +46,38 @@ function findProduct(){
         encodeURIComponent(article)
     )
 
+
     .then(response => response.json())
+
 
     .then(data => {
 
+
+        console.log(
+            "Ответ API:",
+            data
+        );
+
+
         showProduct(data);
+
 
     })
 
+
     .catch(error => {
 
-        console.error(error);
+
+        console.error(
+            "Ошибка API:",
+            error
+        );
+
 
         showMessage(
             "Ошибка соединения с сервером"
         );
+
 
     });
 
@@ -76,74 +98,83 @@ function findProduct(){
 function showProduct(data){
 
 
-const result =
-document.getElementById("result");
+    const result =
+        document.getElementById("result");
 
 
 
-if(!data.success){
+    if(!data.success){
 
 
-result.innerHTML = `
+        result.innerHTML = `
 
-<div class="card">
+        <div class="card">
 
-❌ ${data.error}
+        ❌ ${data.error}
 
-</div>
+        </div>
 
-`;
+        `;
 
-return;
+
+        return;
+
+
+    }
+
+
+
+    result.innerHTML = `
+
+
+    <div class="card">
+
+
+        <div class="title">
+
+        ${data.name}
+
+        </div>
+
+
+
+        <p>
+        Артикул:
+        <b>${data.article}</b>
+        </p>
+
+
+
+        <p>
+        Количество:
+        <b>${data.quantity}</b>
+        </p>
+
+
+
+        <p>
+        Ячейка хранения:
+        </p>
+
+
+
+        <div class="cell">
+
+        ${data.cell}
+
+        </div>
+
+
+
+    </div>
+
+
+    `;
 
 
 }
 
 
-
-result.innerHTML = `
-
-<div class="card">
-
-
-<div class="title">
-
-${data.name}
-
-</div>
-
-
-<p>
-Артикул:
-<b>${data.article}</b>
-</p>
-
-
-<p>
-Количество:
-<b>${data.quantity}</b>
-</p>
-
-
-<p>
-Ячейка хранения:
-</p>
-
-
-<div class="cell">
-
-${data.cell}
-
-</div>
-
-
-</div>
-
-`;
-
-
-
-}
 
 
 
@@ -159,173 +190,162 @@ ${data.cell}
 async function startScanner(){
 
 
-const video =
-document.getElementById("video");
+    const video =
+        document.getElementById("video");
 
 
-const scanner =
-document.getElementById("scanner");
-
-
-
-scanner.style.display="block";
+    const scanner =
+        document.getElementById("scanner");
 
 
 
-codeReader =
-new ZXing.BrowserMultiFormatReader();
+    scanner.style.display = "block";
 
 
 
-try{
+    try {
 
 
-const devices =
-await codeReader.listVideoInputDevices();
+        codeReader =
+            new ZXing.BrowserMultiFormatReader();
 
 
 
-if(devices.length===0){
+        const devices =
+            await codeReader.listVideoInputDevices();
 
 
-alert(
-"Камера не найдена"
-);
 
-return;
+        console.log(
+            "Камеры:",
+            devices
+        );
+
+
+
+        if(devices.length === 0){
+
+
+            alert(
+                "Камера не найдена"
+            );
+
+
+            return;
+
+
+        }
+
+
+
+        // выбираем заднюю камеру
+
+        let selectedDeviceId =
+            devices[devices.length - 1]
+            .deviceId;
+
+
+
+
+        codeReader.decodeFromVideoDevice(
+
+            selectedDeviceId,
+
+            video,
+
+
+            (result,error)=>{
+
+
+                if(result){
+
+
+                    console.log(
+                        "Получен штрихкод:",
+                        result.text
+                    );
+
+
+
+                    let article =
+                        formatArticle(
+                            result.text
+                        );
+
+
+
+                    console.log(
+                        "Сформирован артикул:",
+                        article
+                    );
+
+
+
+                    const input =
+                        document
+                        .getElementById("article");
+
+
+
+                    input.value = article;
+
+
+
+                    input.dispatchEvent(
+                        new Event("input")
+                    );
+
+
+
+                    stopScanner();
+
+
+
+                    setTimeout(()=>{
+
+
+                        findProduct();
+
+
+                    },300);
+
+
+
+                }
+
+
+            }
+
+
+        );
+
+
+
+    }
+
+
+    catch(error){
+
+
+        console.error(
+            "Ошибка камеры:",
+            error
+        );
+
+
+        alert(
+            "Ошибка камеры: "
+            +
+            error.message
+        );
+
+
+    }
 
 
 }
 
 
-
-
-// выбираем последнюю камеру
-// обычно задняя камера телефона
-
-const selectedDeviceId =
-devices[devices.length-1].deviceId;
-
-
-
-codeReader.decodeFromVideoDevice(
-
-selectedDeviceId,
-
-video,
-
-(result, error)=>{
-
-
-if(result){
-
-
-    console.log(
-        "Получен штрихкод:",
-        result.text
-    );
-
-
-    let article =
-        formatArticle(result.text);
-
-
-    console.log(
-        "Сформирован артикул:",
-        article
-    );
-
-
-
-    const input =
-        document.getElementById("article");
-
-
-
-    input.value = article;
-
-
-
-    // вызываем событие изменения поля
-    input.dispatchEvent(
-        new Event("input")
-    );
-
-
-
-    stopScanner();
-
-
-
-    // небольшая задержка,
-    // чтобы поле успело заполниться
-
-    setTimeout(()=>{
-
-        findProduct();
-
-    },300);
-
-
-
-}
-
-
-let article = formatArticle(result.text);
-
-console.log(
-    "Штрихкод:",
-    result.text
-);
-
-console.log(
-    "Артикул:",
-    article
-);
-
-
-
-stopScanner();
-
-
-
-findProduct();
-
-
-
-}
-
-
-}
-
-
-);
-
-
-
-}
-
-catch(error){
-
-
-console.error(
-"Ошибка камеры:",
-error
-);
-
-
-alert(
-"Ошибка камеры: "
-+
-error.message
-);
-
-
-}
-
-
-
-}
 
 
 
@@ -341,23 +361,24 @@ error.message
 function stopScanner(){
 
 
+    if(codeReader){
 
-if(codeReader){
+
+        codeReader.reset();
 
 
-codeReader.reset();
+    }
+
+
+
+    document
+    .getElementById("scanner")
+    .style.display="none";
 
 
 }
 
 
-
-document
-.getElementById("scanner")
-.style.display="none";
-
-
-}
 
 
 
@@ -373,35 +394,217 @@ document
 
 function formatArticle(code){
 
-    let value = String(code)
+
+    console.log(
+        "formatArticle получил:",
+        code
+    );
+
+
+
+    let value =
+        String(code)
         .replace(/\D/g,"");
 
 
-    // если сканер прочитал длинный код,
-    // берем последние 7 цифр
+
+    /*
+    Если штрихкод длиннее,
+    берем последние 7 цифр
+    */
+
+
     if(value.length > 7){
 
-        value = value.slice(-7);
+
+        value =
+            value.slice(-7);
+
 
     }
+
+
 
 
     if(value.length === 7){
 
+
         return (
+
             value.substring(0,2)
-            + "."
-            + value.substring(2,4)
-            + "."
-            + value.substring(4,7)
+            +
+            "."
+            +
+            value.substring(2,4)
+            +
+            "."
+            +
+            value.substring(4,7)
+
         );
+
 
     }
 
 
+
     return value;
 
+
 }
+
+
+
+
+
+
+
+/*
+========================================
+Поиск всех товаров в ячейке
+========================================
+*/
+
+
+function findCell(){
+
+
+    const cell =
+        document
+        .getElementById("cell")
+        .value
+        .trim();
+
+
+
+    if(cell===""){
+
+
+        alert(
+            "Введите ячейку"
+        );
+
+
+        return;
+
+
+    }
+
+
+
+
+    fetch(
+
+        API_URL +
+        "?cell=" +
+        encodeURIComponent(cell)
+
+    )
+
+
+    .then(r=>r.json())
+
+
+    .then(data=>{
+
+
+        showCellProducts(data);
+
+
+    });
+
+
+}
+
+
+
+
+
+function showCellProducts(data){
+
+
+    const result =
+        document.getElementById("result");
+
+
+
+    if(!data.products ||
+       data.products.length===0){
+
+
+        result.innerHTML = `
+
+        <div class="card">
+
+        В ячейке нет товаров
+
+        </div>
+
+        `;
+
+
+        return;
+
+
+    }
+
+
+
+    let html = `
+
+    <div class="card">
+
+    <h3>
+    Ячейка:
+    ${data.cell}
+    </h3>
+
+    `;
+
+
+
+    data.products.forEach((p,index)=>{
+
+
+        html += `
+
+        <hr>
+
+
+        <b>
+        ${index+1}. ${p.name}
+        </b>
+
+
+        <p>
+        Артикул:
+        ${p.article}
+        </p>
+
+
+        <p>
+        Количество:
+        ${p.quantity}
+        </p>
+
+
+        `;
+
+
+    });
+
+
+
+    html += "</div>";
+
+
+
+    result.innerHTML = html;
+
+
+}
+
+
 
 
 
@@ -410,16 +613,17 @@ function formatArticle(code){
 function showMessage(text){
 
 
-document
-.getElementById("result")
-.innerHTML = `
+    document
+    .getElementById("result")
+    .innerHTML = `
 
-<div class="card">
+    <div class="card">
 
-${text}
+    ${text}
 
-</div>
+    </div>
 
-`;
+    `;
+
 
 }
