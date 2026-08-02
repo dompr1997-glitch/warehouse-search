@@ -130,11 +130,27 @@ function showProduct(data){
     <div class="card">
 
 
-        <div class="title">
+${data.photo ? `
 
-        ${data.name}
+<img 
+src="${data.photo}"
+style="
+width:100%;
+max-height:250px;
+object-fit:contain;
+border-radius:10px;
+margin-bottom:15px;
+">
 
-        </div>
+` : ""}
+
+
+
+<div class="title">
+
+${data.name}
+
+</div>
 
 
 
