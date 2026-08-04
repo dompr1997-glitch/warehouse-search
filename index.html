@@ -447,13 +447,15 @@ function startSearch(){
     */
 
 
-if(isArticle(value)){
-
+if(
+    value.match(/^\d{2}\.\d{2}\.\d{3}$/)
+    ||
+    value.replace(/\D/g,"").length===7
+){
 
     console.log(
         "Режим: ПОИСК ТОВАРА"
     );
-
 
     searchArticle(value);
 
