@@ -1,71 +1,1274 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 
 <head>
 
-<meta charset="UTF-8">
+  <base target="_top">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
 
-<title>Поиск товара</title>
+  <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css">
+  <title>Поиск товара</title>
 
+  <!-- ZXing -->
+
+  <script src="https://unpkg.com/@zxing/library@latest"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    background:#f3f5f7;
+
+    font-family:Arial,sans-serif;
+
+    color:#333;
+
+}
+
+.container{
+
+    max-width:700px;
+
+    margin:auto;
+
+    padding:20px;
+
+}
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+    color:#1976d2;
+
+}
+
+.search-box{
+
+    background:#fff;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
+
+}
+
+input{
+
+    width:100%;
+
+    padding:16px;
+
+    font-size:22px;
+
+    border:1px solid #ccc;
+
+    border-radius:10px;
+
+    outline:none;
+
+}
+
+input:focus{
+
+    border-color:#1976d2;
+
+}
+
+.buttons{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:15px;
+
+}
+
+button{
+
+    flex:1;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#1976d2;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+}
+
+button:hover{
+
+    background:#1565c0;
+
+}
+
+button:active{
+
+    transform:scale(.98);
+
+}
+
+#scanner{
+
+    display:none;
+
+    margin-top:20px;
+
+}
+
+#video{
+
+    width:100%;
+
+    border-radius:10px;
+
+    background:#000;
+
+}
+
+.card{
+
+    background:#fff;
+
+    margin-top:20px;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
+
+}
+
+.card img{
+
+    width:100%;
+
+    max-height:250px;
+
+    object-fit:contain;
+
+    border-radius:10px;
+
+    margin-bottom:15px;
+
+}
+
+.title{
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+
+}
+
+.row{
+
+    margin-top:10px;
+
+    font-size:18px;
+
+}
+
+.label{
+
+    color:#777;
+
+}
+
+.value{
+
+    font-weight:bold;
+
+}
+
+.cell{
+
+    font-size:28px;
+
+    color:#d32f2f;
+
+    font-weight:bold;
+
+}
+
+.item{
+
+    border-top:1px solid #ddd;
+
+    padding:15px 0;
+
+}
+
+.item:first-child{
+
+    border-top:none;
+
+}
+
+.item img{
+
+    width:120px;
+
+    display:block;
+
+    margin-bottom:10px;
+
+}
+
+.count{
+
+    margin-top:15px;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+}
+
+.message{
+
+    text-align:center;
+
+    font-size:20px;
+
+    padding:20px;
+
+}
+
+.loading{
+
+    text-align:center;
+
+    font-size:22px;
+
+    padding:25px;
+
+}
+
+@media(max-width:600px){
+
+.container{
+
+padding:10px;
+
+}
+
+.search-box{
+
+padding:15px;
+
+}
+
+input{
+
+font-size:20px;
+
+}
+
+button{
+
+font-size:16px;
+
+padding:12px;
+
+}
+
+.buttons{
+
+flex-direction:column;
+
+}
+
+.title{
+
+font-size:22px;
+
+}
+
+.cell{
+
+font-size:24px;
+
+}
+
+}
+
+</style>
 
 </head>
 
-
 <body>
-
 
 <div class="container">
 
+<h1>
 
-<h2>
-📦 Поиск товара
-</h2>
+📦 Склад
 
+</h1>
 
-<input 
-id="article"
+<div class="search-box">
+
+<input
+
+id="search"
+
 type="text"
-placeholder="00.00.000"
-maxlength="9"
->
 
+placeholder="Артикул или ячейка"
 
-<button onclick="findProduct()">
+autocomplete="off">
+
+<div class="buttons">
+
+<button onclick="startSearch()">
+
 🔎 Найти
-</button>
 
+</button>
 
 <button onclick="startScanner()">
+
 📷 Сканировать
+
 </button>
-
-
-
-<div id="scanner">
-
-<video id="video" autoplay playsinline></video>
 
 </div>
 
+<div id="scanner">
 
+<video
+
+id="video"
+
+autoplay
+
+playsinline>
+
+</video>
+
+</div>
+
+</div>
 
 <div id="result">
 
 </div>
 
-
 </div>
 
+<script>
+
+  // ================================
+// URL вашего REST API
+// ================================
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzvTP0fucQOfvu-H3eOnseMO2cDa2bzMdKgYIejdlYdWeXupyQ-7qaKEiKek6NzWUdt0g/exec";
 
 
-<script src="https://unpkg.com/@zxing/library@latest"></script>
 
-<script src="script.js"></script>
+let codeReader = null;
 
+
+// ================================
+// Основной поиск
+// Автоматическое определение
+// товар или ячейка
+// ================================
+
+function startSearch(){
+
+
+    let value =
+    document
+    .getElementById("search")
+    .value
+    .trim();
+
+
+
+    if(value===""){
+
+
+        showMessage(
+            "Введите артикул или ячейку"
+        );
+
+
+        return;
+
+    }
+
+
+
+    console.log(
+        "Поиск:",
+        value
+    );
+
+
+
+    /*
+      Определяем тип поиска
+
+      Артикул:
+      25.03.001
+
+      Ячейка:
+      А.01.01.01
+
+    */
+
+
+    if(isArticle(value)){
+
+
+        searchArticle(value);
+
+
+    }
+
+    else{
+
+
+        searchCell(value);
+
+
+    }
+
+
+}
+
+
+
+// ================================
+// Проверка артикула
+// ================================
+
+function isArticle(value){
+
+
+    let clean =
+    value.replace(/\D/g,"");
+
+
+
+    /*
+      Артикул имеет 7 цифр
+
+      2503001
+
+    */
+
+
+    return clean.length===7;
+
+
+}
+
+
+
+// ================================
+// Поиск товара
+// ================================
+
+function searchArticle(article){
+
+
+
+    article =
+    formatArticle(article);
+
+
+
+    console.log(
+        "Артикул после обработки:",
+        article
+    );
+
+
+
+    showLoading();
+
+
+
+    fetch(
+
+        API_URL +
+        "?article=" +
+        encodeURIComponent(article)
+
+    )
+
+
+    .then(response=>response.json())
+
+
+    .then(data=>{
+
+
+        console.log(
+            "Ответ товара:",
+            data
+        );
+
+
+        showProduct(data);
+
+
+    })
+
+
+    .catch(error=>{
+
+
+        console.error(error);
+
+
+        showMessage(
+            "Ошибка соединения"
+        );
+
+
+    });
+
+
+
+}
+
+
+
+// ================================
+// Поиск содержимого ячейки
+// ================================
+
+function searchCell(cell){
+
+
+
+    cell =
+    cell.toUpperCase();
+
+
+
+    showLoading();
+
+
+
+    fetch(
+
+        API_URL +
+        "?cell=" +
+        encodeURIComponent(cell)
+
+    )
+
+
+    .then(response=>response.json())
+
+
+    .then(data=>{
+
+
+        console.log(
+            "Ответ ячейки:",
+            data
+        );
+
+
+        showCell(data);
+
+
+    })
+
+
+    .catch(error=>{
+
+
+        console.error(error);
+
+
+        showMessage(
+            "Ошибка соединения"
+        );
+
+
+    });
+
+
+
+}
+
+
+
+
+// ================================
+// Форматирование артикула
+//
+// 2503001
+// ↓
+// 25.03.001
+//
+// ================================
+
+function formatArticle(value){
+
+
+    let number =
+    String(value)
+    .replace(/\D/g,"");
+
+
+
+    if(number.length>7){
+
+
+        number =
+        number.slice(-7);
+
+
+    }
+
+
+
+    if(number.length===7){
+
+
+        return (
+
+            number.substring(0,2)
+            +
+            "."
+            +
+            number.substring(2,4)
+            +
+            "."
+            +
+            number.substring(4,7)
+
+        );
+
+
+    }
+
+
+    return value;
+
+
+}
+
+
+
+
+// ================================
+// Маска ввода
+// автоматически ставит точки
+// ================================
+
+document
+.getElementById("search")
+.addEventListener(
+"input",
+function(){
+
+
+    let value =
+    this.value;
+
+
+
+    /*
+      Если ввод похож на артикул,
+      добавляем точки
+
+      2503001
+      →
+      25.03.001
+
+    */
+
+
+    if(
+      /^\d+$/.test(value)
+    ){
+
+
+        value =
+        value.replace(/\D/g,"");
+
+
+
+        if(value.length>4){
+
+
+            value =
+            value.substring(0,2)
+            +
+            "."
+            +
+            value.substring(2,4)
+            +
+            "."
+            +
+            value.substring(4,7);
+
+
+        }
+
+
+        this.value=value;
+
+
+    }
+
+
+});
+
+
+
+
+// ================================
+// Запуск сканера
+// ================================
+
+async function startScanner(){
+
+
+    const video =
+    document.getElementById("video");
+
+
+    document
+    .getElementById("scanner")
+    .style.display="block";
+
+
+
+    try{
+
+
+        codeReader =
+        new ZXing.BrowserMultiFormatReader();
+
+
+
+        const devices =
+        await codeReader
+        .listVideoInputDevices();
+
+
+
+        console.log(
+            "Камеры:",
+            devices
+        );
+
+
+
+        if(devices.length===0){
+
+
+            showMessage(
+                "Камера не найдена"
+            );
+
+
+            return;
+
+
+        }
+
+
+
+        // выбираем последнюю камеру
+        // обычно задняя камера телефона
+
+        const deviceId =
+        devices[devices.length-1]
+        .deviceId;
+
+
+
+        codeReader
+        .decodeFromVideoDevice(
+
+            deviceId,
+
+            video,
+
+            (result,error)=>{
+
+
+                if(result){
+
+
+                    console.log(
+                        "Штрихкод:",
+                        result.text
+                    );
+
+
+
+                    let value =
+                    result.text;
+
+
+
+                    document
+                    .getElementById("search")
+                    .value =
+                    formatArticle(value);
+
+
+
+                    stopScanner();
+
+
+
+                    setTimeout(()=>{
+
+
+                        startSearch();
+
+
+                    },300);
+
+
+
+                }
+
+
+            }
+
+        );
+
+
+
+    }
+
+
+    catch(error){
+
+
+        console.error(
+            "Ошибка камеры:",
+            error
+        );
+
+
+        showMessage(
+            "Ошибка камеры: "
+            +
+            error.message
+        );
+
+
+    }
+
+
+}
+
+
+
+
+// ================================
+// Остановка камеры
+// ================================
+
+function stopScanner(){
+
+
+    if(codeReader){
+
+
+        codeReader.reset();
+
+
+    }
+
+
+    document
+    .getElementById("scanner")
+    .style.display="none";
+
+
+}
+
+
+
+
+// ================================
+// Служебные сообщения
+// ================================
+
+
+function showLoading(){
+
+
+    document
+    .getElementById("result")
+    .innerHTML=`
+
+    <div class="card loading">
+
+    ⏳ Поиск...
+
+    </div>
+
+    `;
+
+
+}
+
+
+
+function showMessage(text){
+
+
+    document
+    .getElementById("result")
+    .innerHTML=`
+
+    <div class="card message">
+
+    ${text}
+
+    </div>
+
+    `;
+
+
+}
+
+  // ================================
+// Вывод карточки товара
+// ================================
+
+function showProduct(data){
+
+
+    const result =
+    document.getElementById("result");
+
+
+
+    if(!data.success){
+
+
+        result.innerHTML = `
+
+        <div class="card message">
+
+        ❌ ${data.error}
+
+        </div>
+
+        `;
+
+
+        return;
+
+
+    }
+
+
+
+    result.innerHTML = `
+
+
+    <div class="card">
+
+
+    ${
+      data.photo
+      ?
+      `
+      <img src="${data.photo}">
+      `
+      :
+      ""
+    }
+
+
+
+    <div class="title">
+
+    ${data.name}
+
+    </div>
+
+
+
+
+    <div class="row">
+
+    <span class="label">
+
+    Артикул:
+
+    </span>
+
+    <span class="value">
+
+    ${data.article}
+
+    </span>
+
+    </div>
+
+
+
+
+
+    <div class="row">
+
+    <span class="label">
+
+    Количество:
+
+    </span>
+
+
+    <span class="value">
+
+    ${data.quantity}
+
+    </span>
+
+
+    </div>
+
+
+
+
+
+    <div class="row">
+
+
+    <span class="label">
+
+    Ячейка:
+
+    </span>
+
+
+    <div class="cell">
+
+    ${data.cell}
+
+    </div>
+
+
+    </div>
+
+
+
+
+    </div>
+
+
+    `;
+
+
+}
+
+
+
+
+
+// ================================
+// Вывод содержимого ячейки
+// ================================
+
+function showCell(data){
+
+
+    const result =
+    document.getElementById("result");
+
+
+
+    if(
+      !data.success ||
+      data.products.length===0
+    ){
+
+
+        result.innerHTML = `
+
+
+        <div class="card message">
+
+
+        📦 В ячейке нет товаров
+
+
+        </div>
+
+
+        `;
+
+
+        return;
+
+
+    }
+
+
+
+
+
+    let html = `
+
+
+    <div class="card">
+
+
+    <div class="title">
+
+    📍 ${data.cell}
+
+    </div>
+
+
+
+    <div class="count">
+
+    Позиций:
+    ${data.count}
+
+    <br>
+
+    Всего единиц:
+    ${data.totalQuantity}
+
+    </div>
+
+
+
+    `;
+
+
+
+
+
+    data.products.forEach(
+    function(product,index){
+
+
+
+        html += `
+
+
+
+        <div class="item">
+
+
+
+        ${
+          product.photo
+          ?
+          `
+          <img src="${product.photo}">
+          `
+          :
+          ""
+        }
+
+
+
+
+        <b>
+
+        ${index+1}. ${product.name}
+
+        </b>
+
+
+
+        <div class="row">
+
+        Артикул:
+
+        <strong>
+
+        ${product.article}
+
+        </strong>
+
+
+        </div>
+
+
+
+
+        <div class="row">
+
+        Количество:
+
+        <strong>
+
+        ${product.quantity}
+
+        </strong>
+
+
+        </div>
+
+
+
+        </div>
+
+
+
+        `;
+
+
+
+    });
+
+
+
+    html += `
+
+    </div>
+
+    `;
+
+
+
+    result.innerHTML = html;
+
+
+}
+  </script>
 
 </body>
 
