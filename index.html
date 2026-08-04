@@ -492,7 +492,19 @@ function isArticle(value){
     );
 
 
-    return clean.length === 7;
+    /*
+      Артикулы:
+      25.03.001  = 7 цифр
+      25.03.01   = 6 цифр
+      25.03.1    = 5 цифр
+
+    */
+
+
+    return (
+        clean.length >= 5 &&
+        clean.length <= 7
+    );
 
 }
 
@@ -649,7 +661,7 @@ function formatArticle(value){
 
 
 
-    if(number.length !== 7){
+    if(number.length < 5 || number.length > 7){
 
         return value;
 
@@ -657,19 +669,20 @@ function formatArticle(value){
 
 
 
-    return (
+    let result =
+    number.substring(0,2)
+    +
+    "."
+    +
+    number.substring(2,4)
+    +
+    "."
+    +
+    number.substring(4);
 
-        number.substring(0,2)
-        +
-        "."
-        +
-        number.substring(2,4)
-        +
-        "."
-        +
-        number.substring(4,7)
 
-    );
+
+    return result;
 
 
 }
@@ -718,19 +731,19 @@ function(){
         if(value.length>4){
 
 
-            value =
-            value.substring(0,2)
-            +
-            "."
-            +
-            value.substring(2,4)
-            +
-            "."
-            +
-            value.substring(4,7);
+    value =
+    value.substring(0,2)
+    +
+    "."
+    +
+    value.substring(2,4)
+    +
+    "."
+    +
+    value.substring(4);
 
 
-        }
+}
 
 
         this.value=value;
