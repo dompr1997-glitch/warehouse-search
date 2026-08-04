@@ -447,21 +447,27 @@ function startSearch(){
     */
 
 
-    if(isArticle(value)){
+if(isArticle(value)){
 
 
-        searchArticle(value);
+    console.log(
+        "Режим: ПОИСК ТОВАРА"
+    );
 
 
-    }
-
-    else{
+    searchArticle(value);
 
 
-        searchCell(value);
+}
+else{
 
 
-    }
+    console.log(
+        "Режим: ПОИСК ЯЧЕЙКИ"
+    );
+
+
+    searchCell(value);
 
 
 }
@@ -641,39 +647,27 @@ function formatArticle(value){
 
 
 
-    if(number.length>7){
+    if(number.length !== 7){
 
-
-        number =
-        number.slice(-7);
-
+        return value;
 
     }
 
 
 
-    if(number.length===7){
+    return (
 
+        number.substring(0,2)
+        +
+        "."
+        +
+        number.substring(2,4)
+        +
+        "."
+        +
+        number.substring(4,7)
 
-        return (
-
-            number.substring(0,2)
-            +
-            "."
-            +
-            number.substring(2,4)
-            +
-            "."
-            +
-            number.substring(4,7)
-
-        );
-
-
-    }
-
-
-    return value;
+    );
 
 
 }
