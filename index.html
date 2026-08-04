@@ -1090,11 +1090,10 @@ data.photo
 `
 
 <img
-
-src="${data.photo}"
-
-onerror="this.style.display='none'"
-
+    src="${data.photo}"
+    style="max-width:100%;max-height:300px"
+    onload="console.log('Фото загрузилось')"
+    onerror="console.log('Ошибка загрузки', this.src)"
 >
 
 `
