@@ -474,32 +474,17 @@ function startSearch(){
 
 function isArticle(value){
 
-
-    value = value.trim();
-
-
-    /*
-    Артикул:
-    25.03.001
-    25-03-001
-    2503001
-
-    */
+    let clean =
+    value.replace(/\D/g,"");
 
 
-    if(
-        /^\d{2}[.\-]?\d{2}[.\-]?\d{3}$/
-        .test(value)
-    ){
-
-        return true;
-
-    }
+    console.log(
+        "Проверка артикула:",
+        clean
+    );
 
 
-
-    return false;
-
+    return clean.length === 7;
 
 }
 
