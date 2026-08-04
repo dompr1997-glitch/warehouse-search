@@ -475,24 +475,33 @@ function startSearch(){
 function isArticle(value){
 
 
-    let clean =
-    value.replace(/\D/g,"");
-
+    value = value.trim();
 
 
     /*
-      Артикул имеет 7 цифр
-
-      2503001
+    Артикул:
+    25.03.001
+    25-03-001
+    2503001
 
     */
 
 
-    return clean.length===7;
+    if(
+        /^\d{2}[.\-]?\d{2}[.\-]?\d{3}$/
+        .test(value)
+    ){
+
+        return true;
+
+    }
+
+
+
+    return false;
 
 
 }
-
 
 
 // ================================
