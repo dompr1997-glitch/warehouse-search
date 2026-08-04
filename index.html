@@ -1081,45 +1081,6 @@ result.innerHTML=`
 
 <div class="card">
 
-
-${
-data.photo
-
-?
-
-`
-
-<img
-src="${data.photo}"
-    style="max-width:100%;max-height:300px"
-    onload="console.log('Фото загрузилось')"
-    onerror="console.log('Ошибка загрузки', this.src)"
->
-
-`
-
-:
-
-`
-
-<div style="
-text-align:center;
-color:#999;
-padding:15px;
-">
-
-📷 Фото отсутствует
-
-</div>
-
-`
-
-}
-
-
-
-
-
 <div class="title">
 
 ${data.name}
@@ -1328,30 +1289,6 @@ html += `
 
 <div class="item">
 
-
-
-${
-product.photo
-
-?
-
-`
-
-<img
-
-src="${product.photo}"
-
-onerror="this.style.display='none'"
-
->
-
-`
-
-:
-
-""
-
-}
 
 
 
