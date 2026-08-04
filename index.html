@@ -828,13 +828,36 @@ async function startScanner(){
             (result,error)=>{
 
 
-                if(result){
+               if(result){
 
 
-                    console.log(
-                        "Штрихкод:",
-                        result.text
-                    );
+    let code =
+    result.text.trim();
+
+
+
+    console.log(
+        "ПОЛНЫЙ ШТРИХКОД:",
+        JSON.stringify(code)
+    );
+
+
+    document
+    .getElementById("search")
+    .value = code;
+
+
+    stopScanner();
+
+
+    setTimeout(()=>{
+
+        startSearch();
+
+    },300);
+
+
+}
 
 
 
