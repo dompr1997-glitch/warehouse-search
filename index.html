@@ -436,45 +436,44 @@ function startSearch(){
 
 
     /*
-      Определяем тип поиска
+      Логика:
 
-      Артикул:
-      25.03.001
+      Есть латинская буква
+      → поиск ячейки
 
-      Ячейка:
-      А.01.01.01
+      Нет латинских букв
+      → поиск артикула
 
     */
 
 
-if(
-    value.match(/^\d{2}\.\d{2}\.\d{3}$/)
-    ||
-    value.replace(/\D/g,"").length===7
-){
+    if(/[A-Za-z]/.test(value)){
 
-    console.log(
-        "Режим: ПОИСК ТОВАРА"
-    );
 
-    searchArticle(value);
+        console.log(
+            "Режим: ПОИСК ЯЧЕЙКИ"
+        );
+
+
+        searchCell(value);
+
+
+    }
+    else{
+
+
+        console.log(
+            "Режим: ПОИСК ТОВАРА"
+        );
+
+
+        searchArticle(value);
+
+
+    }
 
 
 }
-else{
-
-
-    console.log(
-        "Режим: ПОИСК ЯЧЕЙКИ"
-    );
-
-
-    searchCell(value);
-
-
-}
-}
-
 
 // ================================
 // Проверка артикула
