@@ -9,52 +9,50 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Поиск товара</title>
 
-<title>Склад - поиск товара</title>
 
-
-<!-- ZXing -->
 <script src="https://unpkg.com/@zxing/library@latest"></script>
 
 
 <style>
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
 
 body{
 
-    background:#f3f5f7;
+background:#f3f5f7;
 
-    font-family:Arial,sans-serif;
+font-family:Arial,sans-serif;
 
-    color:#333;
+color:#333;
 
 }
 
 
 .container{
 
-    max-width:700px;
+max-width:700px;
 
-    margin:auto;
+margin:auto;
 
-    padding:20px;
+padding:20px;
 
 }
 
 
 h1{
 
-    text-align:center;
+text-align:center;
 
-    color:#1976d2;
+margin-bottom:20px;
 
-    margin-bottom:20px;
+color:#1976d2;
 
 }
 
@@ -62,13 +60,13 @@ h1{
 
 .search-box{
 
-    background:#fff;
+background:white;
 
-    padding:20px;
+padding:20px;
 
-    border-radius:12px;
+border-radius:12px;
 
-    box-shadow:0 4px 15px rgba(0,0,0,.15);
+box-shadow:0 4px 15px rgba(0,0,0,.15);
 
 }
 
@@ -76,17 +74,17 @@ h1{
 
 input{
 
-    width:100%;
+width:100%;
 
-    padding:16px;
+padding:16px;
 
-    font-size:22px;
+font-size:22px;
 
-    text-align:center;
+border:1px solid #ccc;
 
-    border-radius:10px;
+border-radius:10px;
 
-    border:1px solid #ccc;
+outline:none;
 
 }
 
@@ -94,9 +92,7 @@ input{
 
 input:focus{
 
-    outline:none;
-
-    border-color:#1976d2;
+border-color:#1976d2;
 
 }
 
@@ -104,11 +100,11 @@ input:focus{
 
 .buttons{
 
-    display:flex;
+display:flex;
 
-    gap:10px;
+gap:10px;
 
-    margin-top:15px;
+margin-top:15px;
 
 }
 
@@ -116,29 +112,29 @@ input:focus{
 
 button{
 
-    flex:1;
+flex:1;
 
-    padding:14px;
+padding:14px;
 
-    border:none;
+border:none;
 
-    border-radius:10px;
+border-radius:10px;
 
-    background:#1976d2;
+background:#1976d2;
 
-    color:white;
+color:white;
 
-    font-size:18px;
+font-size:18px;
 
-    cursor:pointer;
+cursor:pointer;
 
 }
 
 
 
-button:active{
+button:hover{
 
-    transform:scale(.98);
+background:#1565c0;
 
 }
 
@@ -146,9 +142,9 @@ button:active{
 
 #scanner{
 
-    display:none;
+display:none;
 
-    margin-top:20px;
+margin-top:20px;
 
 }
 
@@ -156,11 +152,11 @@ button:active{
 
 #video{
 
-    width:100%;
+width:100%;
 
-    background:#000;
+border-radius:10px;
 
-    border-radius:10px;
+background:black;
 
 }
 
@@ -168,15 +164,15 @@ button:active{
 
 .card{
 
-    background:white;
+background:white;
 
-    margin-top:20px;
+margin-top:20px;
 
-    padding:20px;
+padding:20px;
 
-    border-radius:12px;
+border-radius:12px;
 
-    box-shadow:0 4px 15px rgba(0,0,0,.15);
+box-shadow:0 4px 15px rgba(0,0,0,.15);
 
 }
 
@@ -184,13 +180,15 @@ button:active{
 
 .card img{
 
-    width:100%;
+width:100%;
 
-    max-height:250px;
+max-height:300px;
 
-    object-fit:contain;
+object-fit:contain;
 
-    border-radius:10px;
+border-radius:10px;
+
+margin-bottom:15px;
 
 }
 
@@ -198,11 +196,11 @@ button:active{
 
 .title{
 
-    font-size:24px;
+font-size:24px;
 
-    font-weight:bold;
+font-weight:bold;
 
-    margin:15px 0;
+margin-bottom:15px;
 
 }
 
@@ -210,9 +208,9 @@ button:active{
 
 .row{
 
-    margin-top:10px;
+margin-top:10px;
 
-    font-size:18px;
+font-size:18px;
 
 }
 
@@ -220,7 +218,7 @@ button:active{
 
 .label{
 
-    color:#777;
+color:#777;
 
 }
 
@@ -228,7 +226,7 @@ button:active{
 
 .value{
 
-    font-weight:bold;
+font-weight:bold;
 
 }
 
@@ -236,11 +234,11 @@ button:active{
 
 .cell{
 
-    font-size:28px;
+font-size:28px;
 
-    color:#d32f2f;
+color:#d32f2f;
 
-    font-weight:bold;
+font-weight:bold;
 
 }
 
@@ -248,17 +246,9 @@ button:active{
 
 .item{
 
-    padding:15px 0;
+border-top:1px solid #ddd;
 
-    border-top:1px solid #ddd;
-
-}
-
-
-
-.item:first-child{
-
-    border-top:none;
+padding:15px 0;
 
 }
 
@@ -266,7 +256,11 @@ button:active{
 
 .item img{
 
-    width:120px;
+width:120px;
+
+height:120px;
+
+object-fit:contain;
 
 }
 
@@ -274,11 +268,11 @@ button:active{
 
 .count{
 
-    margin-top:15px;
+font-size:20px;
 
-    font-size:20px;
+font-weight:bold;
 
-    font-weight:bold;
+margin-top:15px;
 
 }
 
@@ -286,9 +280,11 @@ button:active{
 
 .message{
 
-    text-align:center;
+text-align:center;
 
-    font-size:20px;
+font-size:20px;
+
+padding:20px;
 
 }
 
@@ -296,9 +292,11 @@ button:active{
 
 .loading{
 
-    text-align:center;
+text-align:center;
 
-    font-size:22px;
+font-size:22px;
+
+padding:25px;
 
 }
 
@@ -306,31 +304,23 @@ button:active{
 
 @media(max-width:600px){
 
-
 .container{
 
-    padding:10px;
+padding:10px;
 
 }
 
 
 .buttons{
 
-    flex-direction:column;
+flex-direction:column;
 
 }
 
 
 input{
 
-    font-size:20px;
-
-}
-
-
-button{
-
-    font-size:16px;
+font-size:20px;
 
 }
 
@@ -342,6 +332,7 @@ button{
 
 
 </head>
+
 
 
 <body>
@@ -389,7 +380,9 @@ autocomplete="off">
 </button>
 
 
+
 </div>
+
 
 
 
@@ -418,35 +411,34 @@ playsinline>
 <div id="result"></div>
 
 
+
 </div>
+
 
 
 <script>
 
 
-// ================================
-// REST API
-// ================================
-
-
 const API_URL =
+
 "https://script.google.com/macros/s/AKfycbzvTP0fucQOfvu-H3eOnseMO2cDa2bzMdKgYIejdlYdWeXupyQ-7qaKEiKek6NzWUdt0g/exec";
 
 
 
-let codeReader = null;
+let codeReader=null;
 
 
 
-// ================================
+// ===============================
 // Основной запуск поиска
-// ================================
+// ===============================
 
 
 function startSearch(){
 
 
 let value =
+
 document
 .getElementById("search")
 .value
@@ -469,36 +461,13 @@ return;
 
 
 
-console.log(
-"Поиск:",
-value
-);
 
+// Ячейка только если есть латинская буква
 
-
-/*
-
-Логика:
-
-Есть буква
-→ ячейка
-
-Только цифры
-→ товар
-
-*/
-
-
-if(/[A-Za-zА-Яа-я]/.test(value)){
-
-
-console.log(
-"Режим: ЯЧЕЙКА"
-);
+if(/[A-Za-z]/.test(value)){
 
 
 searchCell(value);
-
 
 
 }
@@ -506,41 +475,25 @@ searchCell(value);
 else{
 
 
-console.log(
-"Режим: ТОВАР"
-);
-
-
 searchArticle(value);
 
 
-
 }
 
 
-
 }
 
+    
 
-
-// ================================
+// ===============================
 // Поиск товара
-// ================================
+// ===============================
 
 
 function searchArticle(article){
 
 
-article =
-formatArticle(article);
-
-
-
-console.log(
-"Артикул:",
-article
-);
-
+article = formatArticle(article);
 
 
 showLoading();
@@ -548,15 +501,13 @@ showLoading();
 
 
 fetch(
-
-API_URL+
-"?article="+
+API_URL +
+"?article=" +
 encodeURIComponent(article)
-
 )
 
 
-.then(r=>r.json())
+.then(response=>response.json())
 
 
 .then(data=>{
@@ -573,10 +524,11 @@ showProduct(data);
 
 })
 
-.catch(e=>{
+
+.catch(error=>{
 
 
-console.error(e);
+console.error(error);
 
 
 showMessage(
@@ -587,27 +539,23 @@ showMessage(
 });
 
 
-
 }
 
-// ================================
-// Поиск содержимого ячейки
-// ================================
+
+
+
+
+
+// ===============================
+// Поиск ячейки
+// ===============================
 
 
 function searchCell(cell){
 
 
 cell =
-cell.trim()
-.toUpperCase();
-
-
-
-console.log(
-"Ячейка:",
-cell
-);
+cell.toUpperCase();
 
 
 
@@ -617,14 +565,15 @@ showLoading();
 
 fetch(
 
-API_URL+
-"?cell="+
+API_URL +
+"?cell=" +
 encodeURIComponent(cell)
 
 )
 
 
-.then(r=>r.json())
+
+.then(response=>response.json())
 
 
 .then(data=>{
@@ -636,17 +585,16 @@ data
 );
 
 
-
 showCell(data);
-
 
 
 })
 
-.catch(e=>{
+
+.catch(error=>{
 
 
-console.error(e);
+console.error(error);
 
 
 showMessage(
@@ -664,18 +612,13 @@ showMessage(
 
 
 
-// ================================
+// ===============================
 // Форматирование артикула
 //
-// 250301
-// ↓
-// 25.03.01
-//
 // 2503001
-// ↓
-// 25.03.001
+// -> 25.03.001
 //
-// ================================
+// ===============================
 
 
 function formatArticle(value){
@@ -683,18 +626,17 @@ function formatArticle(value){
 
 
 let number =
+
 String(value)
+
 .replace(/\D/g,"");
 
 
 
-if(number.length < 5){
-
-
-return value;
-
-
-}
+if(
+number.length>=5 &&
+number.length<=7
+){
 
 
 
@@ -725,53 +667,51 @@ number.substring(4)
 
 
 
+return value;
+
+
+}
 
 
 
 
-// ================================
-// Маска ввода артикула
-// только для цифр
-//
-// 250301
-// ↓
-// 25.03.01
-//
-// ================================
+
+
+
+// ===============================
+// Маска ввода
+// ===============================
 
 
 document
+
 .getElementById("search")
+
 .addEventListener(
+
 "input",
+
 function(){
 
 
 
-let value =
-this.value;
+let value=this.value;
 
 
 
-/*
-
-Если ввод только цифры,
-ставим точки
-
-
-*/
+// если вводятся только цифры
 
 
 if(/^\d+$/.test(value)){
 
 
 
-value =
-value.replace(/\D/g,"");
+value=value.replace(/\D/g,"");
 
 
 
 if(value.length>4){
+
 
 
 value =
@@ -803,11 +743,13 @@ value.substring(4);
 this.value=value;
 
 
-
 }
 
 
-});
+
+}
+
+);
 
 
 
@@ -815,29 +757,28 @@ this.value=value;
 
 
 
-// ================================
-// СКАНЕР ZXing
-//
-// Исправлено:
-// - буквы сохраняются
-// - Code128 работает
-// - нет двойной обработки
-//
-// ================================
-
+// ===============================
+// СКАНЕР ZXING
+// ===============================
 
 
 async function startScanner(){
 
 
+
 const video =
+
 document.getElementById("video");
 
 
 
 document
+
 .getElementById("scanner")
+
 .style.display="block";
+
+
 
 
 
@@ -846,31 +787,28 @@ try{
 
 
 codeReader =
+
 new ZXing.BrowserMultiFormatReader();
 
 
 
+
+
 const devices =
+
 await codeReader
 .listVideoInputDevices();
 
 
-
-console.log(
-"Камеры:",
-devices
-);
 
 
 
 if(devices.length===0){
 
 
-
 showMessage(
 "Камера не найдена"
 );
-
 
 
 return;
@@ -881,11 +819,10 @@ return;
 
 
 
-
-// выбираем заднюю камеру
-
+// задняя камера телефона
 
 let deviceId =
+
 devices[devices.length-1]
 .deviceId;
 
@@ -893,74 +830,24 @@ devices[devices.length-1]
 
 
 
-for(let device of devices){
+codeReader
 
-
-let label =
-device.label.toLowerCase();
-
-
-
-if(
-
-label.includes("back")
-
-||
-
-label.includes("rear")
-
-||
-
-label.includes("environment")
-
-){
-
-
-deviceId =
-device.deviceId;
-
-
-break;
-
-
-}
-
-
-}
-
-
-
-
-
-
-codeReader.decodeFromVideoDevice(
-
+.decodeFromVideoDevice(
 
 deviceId,
 
-
 video,
 
-
-
 (result,error)=>{
+
 
 
 if(result){
 
 
 
-/*
-ВАЖНО:
-
-берём оригинальный текст
-
-без formatArticle()
-
-*/
-
-
 let code =
+
 result.text.trim();
 
 
@@ -975,27 +862,15 @@ JSON.stringify(code)
 
 
 
+// НЕ удаляем буквы!
+// важно для Code128
 
 
 document
+
 .getElementById("search")
-.value =
-code;
 
-
-
-
-
-// вибрация
-
-
-if(navigator.vibrate){
-
-
-navigator.vibrate(200);
-
-
-}
+.value=code;
 
 
 
@@ -1013,7 +888,6 @@ setTimeout(()=>{
 startSearch();
 
 
-
 },300);
 
 
@@ -1022,13 +896,10 @@ startSearch();
 
 
 
-
 }
 
 
-
 );
-
 
 
 
@@ -1039,8 +910,11 @@ catch(error){
 
 
 console.error(
+
 "Ошибка камеры:",
+
 error
+
 );
 
 
@@ -1051,27 +925,27 @@ showMessage(
 
 +
 
-error.name
+error.message
 
 );
 
 
-}
-
-
-
 
 }
 
 
 
+}
 
 
 
 
-// ================================
-// Остановка камеры
-// ================================
+
+
+
+// ===============================
+// Остановка сканера
+// ===============================
 
 
 function stopScanner(){
@@ -1084,16 +958,16 @@ if(codeReader){
 codeReader.reset();
 
 
-codeReader=null;
-
-
 }
 
 
 
 document
+
 .getElementById("scanner")
+
 .style.display="none";
+
 
 
 }
@@ -1101,20 +975,22 @@ document
 
 
 
-// ================================
-// Индикатор загрузки
-// ================================
+
+
+// ===============================
+// Сообщения
+// ===============================
 
 
 function showLoading(){
 
 
+
 document
+
 .getElementById("result")
-.innerHTML=
 
-
-`
+.innerHTML=`
 
 <div class="card loading">
 
@@ -1130,22 +1006,15 @@ document
 
 
 
-
-// ================================
-// Сообщения
-// ================================
-
-
 function showMessage(text){
 
 
 
 document
+
 .getElementById("result")
-.innerHTML=
 
-
-`
+.innerHTML=`
 
 <div class="card message">
 
@@ -1158,41 +1027,44 @@ ${text}
 
 
 }
-  
-// ================================
-// Вывод карточки товара
-// ================================
+
+    
+
+// ===============================
+// Карточка товара
+// ===============================
 
 
 function showProduct(data){
 
 
+console.log(
+"Карточка товара:",
+JSON.stringify(data)
+);
+
+
+
 const result =
+
 document.getElementById("result");
 
 
 
-if(!data || !data.success){
 
 
-result.innerHTML =
+if(!data.success){
 
-`
+
+result.innerHTML=`
 
 <div class="card message">
 
-❌ ${
-data && data.error
-?
-data.error
-:
-"Товар не найден"
-}
+❌ ${data.error}
 
 </div>
 
 `;
-
 
 
 return;
@@ -1204,13 +1076,10 @@ return;
 
 
 
-result.innerHTML =
 
-
-`
+result.innerHTML=`
 
 <div class="card">
-
 
 
 ${
@@ -1220,15 +1089,34 @@ data.photo
 
 `
 
-<img src="${data.photo}">
+<img
+
+src="${data.photo}"
+
+onerror="this.style.display='none'"
+
+>
 
 `
 
 :
 
-""
+`
+
+<div style="
+text-align:center;
+color:#999;
+padding:15px;
+">
+
+📷 Фото отсутствует
+
+</div>
+
+`
 
 }
+
 
 
 
@@ -1287,14 +1175,16 @@ ${data.quantity}
 
 
 
+
 <div class="row">
 
 
-<span class="label">
+<div class="label">
 
 Ячейка хранения:
 
-</span>
+</div>
+
 
 
 <div class="cell">
@@ -1304,9 +1194,8 @@ ${data.cell}
 </div>
 
 
+
 </div>
-
-
 
 
 
@@ -1324,16 +1213,32 @@ ${data.cell}
 
 
 
-// ================================
-// Вывод содержимого ячейки
-// ================================
+
+// ===============================
+// Просмотр содержимого ячейки
+// ===============================
 
 
 function showCell(data){
 
 
+
 const result =
+
 document.getElementById("result");
+
+
+
+
+
+console.log(
+
+"Карточка ячейки:",
+
+JSON.stringify(data)
+
+);
+
 
 
 
@@ -1341,17 +1246,9 @@ document.getElementById("result");
 
 if(
 
-!data
+!data.success ||
 
-||
-
-!data.success
-
-||
-
-!data.products
-
-||
+!data.products ||
 
 data.products.length===0
 
@@ -1359,19 +1256,13 @@ data.products.length===0
 
 
 
-result.innerHTML =
-
-
-`
+result.innerHTML=`
 
 <div class="card message">
 
-
 📦 В ячейке нет товаров
 
-
 </div>
-
 
 `;
 
@@ -1387,13 +1278,10 @@ return;
 
 
 
-let html =
+let html = `
 
-
-`
 
 <div class="card">
-
 
 
 <div class="title">
@@ -1404,25 +1292,19 @@ let html =
 
 
 
-
-
 <div class="count">
-
 
 Позиций:
 
 ${data.count}
 
 
-
 <br>
-
 
 
 Всего единиц:
 
 ${data.totalQuantity}
-
 
 
 </div>
@@ -1435,21 +1317,17 @@ ${data.totalQuantity}
 
 
 
+
 data.products.forEach(
 
-(product,index)=>{
+function(product,index){
 
 
 
-html +=
+html += `
 
-
-
-`
 
 <div class="item">
-
-
 
 
 
@@ -1460,7 +1338,13 @@ product.photo
 
 `
 
-<img src="${product.photo}">
+<img
+
+src="${product.photo}"
+
+onerror="this.style.display='none'"
+
+>
 
 `
 
@@ -1472,14 +1356,11 @@ product.photo
 
 
 
-
-
-
-<div class="title">
+<b>
 
 ${index+1}. ${product.name}
 
-</div>
+</b>
 
 
 
@@ -1487,13 +1368,11 @@ ${index+1}. ${product.name}
 
 <div class="row">
 
-
 <span class="label">
 
 Артикул:
 
 </span>
-
 
 
 <strong>
@@ -1503,9 +1382,7 @@ ${product.article}
 </strong>
 
 
-
 </div>
-
 
 
 
@@ -1522,7 +1399,6 @@ ${product.article}
 </span>
 
 
-
 <strong>
 
 ${product.quantity}
@@ -1536,8 +1412,8 @@ ${product.quantity}
 
 
 
-
 </div>
+
 
 
 `;
@@ -1553,10 +1429,7 @@ ${product.quantity}
 
 
 
-html +=
-
-
-`
+html += `
 
 </div>
 
@@ -1564,8 +1437,7 @@ html +=
 
 
 
-
-result.innerHTML = html;
+result.innerHTML=html;
 
 
 
